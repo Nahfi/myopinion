@@ -2,31 +2,40 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Models\Comment;
+use App\Services\CommentService;
 
 class CommentController
 {
-    private Comment $commentModel;
+    private CommentService $commentService;
 
     public function __construct()
     {
-        $this->commentModel = new Comment();
+        $this->commentService = new CommentService();
     }
 
-    public function store($postId, $data)
+    /** GET /posts/:postId/comments — active only */
+    public function index(string $postId): void
     {
-        $this->commentModel->create(
-            $postId,
-            $_SERVER['user_id'],
-            $data['content']
-        );
-
-        echo json_encode(['message' => 'Comment added']);
+        $result = $this->commentService->getActiveComments((int)$postId);
+        echo json_encode($result);
     }
 
-    public function index($postId)
+    /** POST /posts/:postId/comments — submit (goes to pending) */
+    public function store(string $postId): void
     {
-        $comments = $this->commentModel->getByPost($postId);
-        echo json_encode(['comments' => $comments]);
+        $data   = json_decode(file_get_contents('php://input'), true) ?? [];
+        $result = $this->commentService->store((int)$postId, (int)$_SERVER['user_id'], $data);
+        $this->respond($result, 201);
+    }
+
+    private function respond(array $result, int $successCode = 200): void
+    {
+        if (isset($result['error'])) {
+            http_response_code($result['code'] ?? 400);
+            echo json_encode(['message' => $result['error']]);
+        } else {
+            http_response_code($successCode);
+            echo json_encode($result);
+        }
     }
 }

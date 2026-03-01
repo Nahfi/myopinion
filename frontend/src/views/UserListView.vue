@@ -31,6 +31,8 @@
 <script>
 import UserCard from '../components/UserCard.vue';
 
+
+
 export default {
   components: { UserCard },
   data() {
@@ -43,7 +45,7 @@ export default {
   async mounted() {
     try {
       const token = localStorage.getItem('token');
-      const res = await this.$axios.get('/users', {
+      const res = await this.$axios.get('/admin/users', {
         headers: {
           Authorization: `Bearer ${token}`
         }

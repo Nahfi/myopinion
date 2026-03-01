@@ -2,95 +2,36 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Models\User;
+use App\Services\UserService;
 
 class UserController
 {
-    private User $userModel;
+    private UserService $userService;
 
     public function __construct()
     {
-        $this->userModel = new User();
+        $this->userService = new UserService();
     }
 
-    /**
-     * Get all users (Admin only)
-     */
-    public function index()
+    public function index(): void
     {
-        if ($_SERVER['user_role'] !== 'admin') {
-            http_response_code(403);
-            echo json_encode(['message' => 'Unauthorized']);
-            return;
-        }
-
-        $users = $this->userModel->all();
-
-        echo json_encode([
-            'status' => 'success',
-            'users'  => $users
-        ]);
+        echo json_encode($this->userService->getAll());
     }
 
-    /**
-     * Show single user
-     */
-    public function show($id)
+    public function destroy(string $id): void
     {
-        if ($_SERVER['user_role'] !== 'admin') {
-            http_response_code(403);
-            echo json_encode(['message' => 'Unauthorized']);
-            return;
-        }
-
-        $user = $this->userModel->findById($id);
-
-        if (!$user) {
-            http_response_code(404);
-            echo json_encode(['message' => 'User not found']);
-            return;
-        }
-
-        echo json_encode($user);
+        $result = $this->userService->delete((int)$id);
+        $this->respond($result);
     }
 
-    /**
-     * Update user role (Admin only)
-     */
-    public function updateRole($id, $data)
+    private function respond(array $result, int $successCode = 200): void
     {
-        if ($_SERVER['user_role'] !== 'admin') {
-            http_response_code(403);
-            echo json_encode(['message' => 'Unauthorized']);
-            return;
+        if (isset($result['error'])) {
+            http_response_code($result['code'] ?? 400);
+            echo json_encode(['message' => $result['error']]);
+        } else {
+            http_response_code($successCode);
+            echo json_encode($result);
         }
-
-        $role = $data['role'] ?? null;
-
-        if (!in_array($role, ['user', 'admin'])) {
-            http_response_code(422);
-            echo json_encode(['message' => 'Invalid role']);
-            return;
-        }
-
-        $this->userModel->updateRole($id, $role);
-
-        echo json_encode(['message' => 'User role updated']);
-    }
-
-    /**
-     * Delete user (Admin only)
-     */
-    public function destroy($id)
-    {
-        if ($_SERVER['user_role'] !== 'admin') {
-            http_response_code(403);
-            echo json_encode(['message' => 'Unauthorized']);
-            return;
-        }
-
-        $this->userModel->delete($id);
-
-        echo json_encode(['message' => 'User deleted']);
     }
 }
