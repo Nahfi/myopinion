@@ -1,0 +1,15 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On 
+    RewriteCond %{HTTP:Authorization} ^(.*)
+    RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
+
+    # Redirect all requests to index.php if file/folder doesn't exist
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    # Remove .php extension from URL
+    RewriteRule ^(.+?)\.php$ $1 [R=301,L]
+
+    # Rewrite everything to index.php
+    RewriteRule ^ index.php [QSA,L]
+</IfModule>
