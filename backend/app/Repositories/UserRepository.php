@@ -98,4 +98,20 @@ class UserRepository implements UserRepositoryInterface
         $stmt->execute([$username]);
         return (int) $stmt->fetchColumn() > 0;
     }
+
+    public function update(int $id, array $data): bool
+    {
+        $fields = [];
+        $params = [];
+        foreach (['name', 'username', 'email', 'password'] as $field) {
+            if (isset($data[$field])) {
+                $fields[]          = "$field = :$field";
+                $params[":$field"] = $data[$field];
+            }
+        }
+        if (empty($fields)) return false;
+        $params[':id'] = $id;
+        $stmt          = $this->pdo->prepare('UPDATE users SET ' . implode(', ', $fields) . ' WHERE id = :id');
+        return $stmt->execute($params);
+    }
 }

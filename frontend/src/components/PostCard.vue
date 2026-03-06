@@ -1,5 +1,5 @@
 <template>
-  <div class="group bg-white rounded-2xl shadow-sm hover:shadow-lg border border-gray-100 overflow-hidden transition-all duration-300 hover:-translate-y-0.5 mb-5">
+  <div :id="'post-' + post.id" class="group bg-white rounded-2xl shadow-sm hover:shadow-lg ...">
 
     <!-- Header -->
     <div class="p-5 pb-3 flex items-start justify-between">

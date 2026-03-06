@@ -24,10 +24,16 @@
               </span>
             </router-link>
             <router-link to="/admin/reactions"   class="px-3 py-1.5 rounded-lg hover:bg-indigo-600 text-sm font-medium transition">Reactions</router-link>
+       
           </template>
 
+
           <div class="flex items-center gap-2 ml-2 pl-2 border-l border-indigo-500">
-            <div class="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center font-bold text-sm">{{ userInitial }}</div>
+
+            <router-link to="/profile" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-indigo-600 text-sm font-medium transition">
+              <div class="w-6 h-6 rounded-full bg-indigo-500 flex items-center justify-center font-bold text-xs">{{ userInitial }}</div>
+              Profile
+            </router-link>
             <button @click="logout" class="px-3 py-1.5 rounded-lg bg-red-500 hover:bg-red-600 text-sm font-medium transition">Logout</button>
           </div>
         </template>

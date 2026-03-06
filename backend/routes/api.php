@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\ReactionTypeController;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\CommentController;
 use App\Http\Controllers\API\PostController;
+use App\Http\Controllers\API\ProfileController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\JWTMiddleware;
@@ -27,6 +28,7 @@ $router->put('/posts/:id', [PostController::class, 'update'], [JWTMiddleware::cl
 $router->delete('/admin/posts/:id', [PostController::class, 'destroy'], [JWTMiddleware::class]);
 $router->post('/reaction/:postId', [PostController::class, 'reaction'], [JWTMiddleware::class]);
 $router->post('/posts/:id/comments', [CommentController::class, 'store'], [JWTMiddleware::class]);
+$router->get('/posts/with/not-commented', [PostController::class, 'notCommented'], [JWTMiddleware::class]);
 
 // Admin routes
 $router->get('/admin/users', [UserController::class, 'index'], [AdminMiddleware::class]);
@@ -42,3 +44,5 @@ $router->get('/admin/reaction-types', [ReactionTypeController::class, 'index'], 
 $router->post('/admin/reaction-types', [ReactionTypeController::class, 'store'], [AdminMiddleware::class]);
 $router->put('/admin/reaction-types/:id', [ReactionTypeController::class, 'update'], [AdminMiddleware::class]);
 $router->delete('/admin/reaction-types/:id', [ReactionTypeController::class, 'destroy'], [AdminMiddleware::class]);
+$router->get('/profile', [ProfileController::class, 'show'], [JWTMiddleware::class]);
+$router->put('/profile', [ProfileController::class, 'update'], [JWTMiddleware::class]);

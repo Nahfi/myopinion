@@ -5,8 +5,7 @@
       <router-view />
     </main>
     <footer class="py-4 text-center text-xs text-gray-400 border-t border-gray-100">
-      © 2025 Opinion · Share your thoughts
-    </footer>
+© {{ new Date().getFullYear() }} Opinion · Share your thoughts    </footer>
   </div>
 </template>
 <script>

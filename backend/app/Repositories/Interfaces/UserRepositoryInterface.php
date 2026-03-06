@@ -11,4 +11,7 @@ interface UserRepositoryInterface
     public function delete(int $id): bool;
     public function emailExists(string $email): bool;
     public function usernameExists(string $username): bool;
+    public function update(int $id, array $data): bool;
+    public function findByEmail(string $email): ?array;
+    public function findByUsername(string $username): ?array;
 }

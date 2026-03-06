@@ -81,4 +81,14 @@ class PostController
             echo json_encode($result);
         }
     }
+
+    public function notCommented(): void
+    {
+        if (!isset($_SERVER['user_id'])) {
+            echo json_encode(['posts' => []]);
+            return;
+        }
+        $result = $this->postService->getNotCommented((int) $_SERVER['user_id']);
+        echo json_encode($result);
+    }
 }

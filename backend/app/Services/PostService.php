@@ -61,7 +61,7 @@ class PostService
             return ['error' => 'Post not found', 'code' => 404];
         }
 
-        $updateData = [];
+        $updateData                                          = [];
         if (!empty($data['title']))   $updateData['title']   = $data['title'];
         if (!empty($data['content'])) $updateData['content'] = $data['content'];
 
@@ -101,5 +101,12 @@ class PostService
             return ['error' => 'Failed to upload image', 'code' => 500];
         }
         return ['url' => '/uploads/' . $filename];
+    }
+
+    public function getNotCommented(int $userId): array
+    {
+        return [
+            'posts' => $this->postRepo->getNotCommentedByUser($userId)
+        ];
     }
 }

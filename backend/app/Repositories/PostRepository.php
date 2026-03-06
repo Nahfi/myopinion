@@ -113,4 +113,24 @@ class PostRepository implements PostRepositoryInterface
         $stmt = $this->pdo->prepare('DELETE FROM posts WHERE id = ?');
         return $stmt->execute([$id]);
     }
+
+    public function getNotCommentedByUser(int $userId, int $limit = 10): array
+    {
+        $stmt = $this->pdo->prepare('
+            SELECT p.id, p.title, p.created_at, u.name AS author_name
+            FROM posts p
+            JOIN users u ON p.user_id = u.id
+            WHERE p.id NOT IN (
+                SELECT DISTINCT c.post_id
+                FROM comments c
+                WHERE c.user_id = :user_id
+            )
+            ORDER BY p.created_at DESC
+            LIMIT :limit
+        ');
+        $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
