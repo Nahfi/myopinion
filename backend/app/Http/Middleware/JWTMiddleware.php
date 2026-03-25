@@ -22,14 +22,14 @@ class JWTMiddleware
         $pdo  = Database::getConnection();
         $stmt = $pdo->prepare('SELECT COUNT(*) FROM token_blacklist WHERE token = ?');
         $stmt->execute([$token]);
-        if ((int)$stmt->fetchColumn() > 0) {
+        if ((int) $stmt->fetchColumn() > 0) {
             http_response_code(401);
             echo json_encode(['message' => 'Token has been revoked']);
             exit;
         }
 
         try {
-            $decoded = JWT::decode($token, new Key($_ENV['JWT_SECRET'], 'HS256'));
+            $decoded              = JWT::decode($token, new Key($_ENV['JWT_SECRET'], 'HS256'));
             $_SERVER['user_id']   = $decoded->sub;
             $_SERVER['user_role'] = $decoded->role;
         } catch (\Exception $e) {

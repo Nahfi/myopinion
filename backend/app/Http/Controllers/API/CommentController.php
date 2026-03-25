@@ -16,7 +16,7 @@ class CommentController
     /** GET /posts/:postId/comments — active only */
     public function index(string $postId): void
     {
-        $result = $this->commentService->getActiveComments((int)$postId);
+        $result = $this->commentService->getActiveComments((int) $postId);
         echo json_encode($result);
     }
 
@@ -24,7 +24,7 @@ class CommentController
     public function store(string $postId): void
     {
         $data   = json_decode(file_get_contents('php://input'), true) ?? [];
-        $result = $this->commentService->store((int)$postId, (int)$_SERVER['user_id'], $data);
+        $result = $this->commentService->store((int) $postId, (int) $_SERVER['user_id'], $data);
         $this->respond($result, 201);
     }
 

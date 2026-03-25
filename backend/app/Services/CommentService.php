@@ -29,6 +29,15 @@ class CommentService
         ];
     }
 
+    public function getAllByStatus(): array
+    {
+        return [
+            'pending'  => $this->commentRepo->getByStatus('pending'),
+            'active'   => $this->commentRepo->getByStatus('active'),
+            'rejected' => $this->commentRepo->getByStatus('rejected'),
+        ];
+    }
+
     /** Admin: moderation queue */
     public function getPending(): array
     {
@@ -51,7 +60,7 @@ class CommentService
         ]);
 
         return [
-            'message' => 'Comment submitted. It will appear after moderation.',
+            'message'    => 'Comment submitted. It will appear after moderation.',
             'comment_id' => $id,
         ];
     }
@@ -88,4 +97,4 @@ class CommentService
         $this->commentRepo->delete($id);
         return ['message' => 'Comment deleted'];
     }
-}
+    }

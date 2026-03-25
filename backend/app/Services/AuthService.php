@@ -60,7 +60,6 @@ class AuthService
         if (!$user || !password_verify($data['password'], $user['password'])) {
             return ['error' => 'Invalid credentials', 'code' => 401];
         }
-
         $token = $this->generateToken($user);
 
         return [

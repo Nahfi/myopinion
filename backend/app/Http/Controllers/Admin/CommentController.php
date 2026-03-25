@@ -13,6 +13,12 @@ class CommentController
         $this->commentService = new CommentService();
     }
 
+         /** ✅ NEW: Get all comments grouped */
+    public function all(): void
+    {
+        echo json_encode($this->commentService->getAllByStatus());
+    }
+
     /** GET /admin/comments/pending */
     public function pending(): void
     {
@@ -22,27 +28,27 @@ class CommentController
     /** GET /admin/posts/:postId/comments */
     public function allForPost(string $postId): void
     {
-        echo json_encode($this->commentService->getAllComments((int)$postId));
+        echo json_encode($this->commentService->getAllComments((int) $postId));
     }
 
     /** PATCH /admin/comments/:id/approve */
     public function approve(string $id): void
     {
-        $result = $this->commentService->approve((int)$id);
+        $result = $this->commentService->approve((int) $id);
         $this->respond($result);
     }
 
     /** PATCH /admin/comments/:id/reject */
     public function reject(string $id): void
     {
-        $result = $this->commentService->reject((int)$id);
+        $result = $this->commentService->reject((int) $id);
         $this->respond($result);
     }
 
     /** DELETE /admin/comments/:id */
     public function destroy(string $id): void
     {
-        $result = $this->commentService->delete((int)$id);
+        $result = $this->commentService->delete((int) $id);
         $this->respond($result);
     }
 

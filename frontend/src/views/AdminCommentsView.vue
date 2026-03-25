@@ -54,58 +54,113 @@
   </div>
 </template>
 
+
 <script>
 import { useToast } from 'vue-toastification';
 const toast = useToast();
+
 export default {
   data() {
     return {
-      pending:   [],
-      active:    [],
-      rejected:  [],
-      loading:   true,
+      pending: [],
+      active: [],
+      rejected: [],
+      loading: true,
       activeTab: 'pending',
-      tabs: [{ key:'pending', label:'Pending' },{ key:'active', label:'Approved' },{ key:'rejected', label:'Rejected' }]
+      tabs: [
+        { key: 'pending', label: 'Pending' },
+        { key: 'active', label: 'Approved' },
+        { key: 'rejected', label: 'Rejected' }
+      ]
     };
   },
-  computed: { currentList() { return this[this.activeTab] || []; } },
-  async created() { await this.load(); },
+
+  computed: {
+    currentList() {
+      return this[this.activeTab] || [];
+    }
+  },
+
+  async created() {
+    await this.load();
+  },
+
   methods: {
     async load() {
       this.loading = true;
+
       try {
-        const res = await this.$axios.get('/admin/comments/pending');
-        this.pending = res.data.comments || [];
-      } catch { toast.error('Failed to load'); }
-      finally { this.loading = false; }
+        const res = await this.$axios.get('/admin/comments');
+
+        this.pending  = res.data.pending  || [];
+        this.active   = res.data.active   || [];
+        this.rejected = res.data.rejected || [];
+
+      } catch (e) {
+        toast.error('Failed to load comments');
+      } finally {
+        this.loading = false;
+      }
     },
+
     async approve(c) {
       try {
         await this.$axios.patch(`/admin/comments/${c.id}/approve`);
+
         this.pending  = this.pending.filter(x => x.id !== c.id);
         this.rejected = this.rejected.filter(x => x.id !== c.id);
+
         this.active.unshift({ ...c, status: 'active' });
+
         toast.success('Approved');
-      } catch { toast.error('Failed'); }
+
+      } catch {
+        toast.error('Failed');
+      }
     },
+
     async reject(c) {
       try {
         await this.$axios.patch(`/admin/comments/${c.id}/reject`);
+
         this.pending = this.pending.filter(x => x.id !== c.id);
         this.active  = this.active.filter(x => x.id !== c.id);
+
         this.rejected.unshift({ ...c, status: 'rejected' });
+
         toast.success('Rejected');
-      } catch { toast.error('Failed'); }
+
+      } catch {
+        toast.error('Failed');
+      }
     },
+
     async remove(c) {
       try {
         await this.$axios.delete(`/admin/comments/${c.id}`);
-        ['pending','active','rejected'].forEach(k => { this[k] = this[k].filter(x => x.id !== c.id); });
+
+        ['pending', 'active', 'rejected'].forEach(k => {
+          this[k] = this[k].filter(x => x.id !== c.id);
+        });
+
         toast.success('Deleted');
-      } catch { toast.error('Failed'); }
+
+      } catch {
+        toast.error('Failed');
+      }
     },
-    badge(s) { return { pending:'bg-amber-100 text-amber-700', active:'bg-green-100 text-green-700', rejected:'bg-red-100 text-red-700' }[s] || 'bg-gray-100 text-gray-600'; },
-    formatTime(ts) { return ts ? new Date(ts.replace(' ','T')).toLocaleString() : ''; }
+
+    badge(status) {
+      return {
+        pending: 'bg-amber-100 text-amber-700',
+        active: 'bg-green-100 text-green-700',
+        rejected: 'bg-red-100 text-red-700'
+      }[status] || 'bg-gray-100 text-gray-600';
+    },
+
+    formatTime(ts) {
+      return ts ? new Date(ts.replace(' ', 'T')).toLocaleString() : '';
+    }
   }
 };
 </script>

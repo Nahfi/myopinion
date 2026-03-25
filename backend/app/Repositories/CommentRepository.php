@@ -26,7 +26,7 @@ class CommentRepository implements CommentRepositoryInterface
             ':user_id' => $data['user_id'],
             ':content' => $data['content'],
         ]);
-        return (int)$this->pdo->lastInsertId();
+        return (int) $this->pdo->lastInsertId();
     }
 
     public function getActiveByPost(int $postId): array
@@ -88,5 +88,21 @@ class CommentRepository implements CommentRepositoryInterface
         );
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+    }
+
+    public function getByStatus(string $status): array
+    {
+        $stmt = $this->pdo->prepare('
+            SELECT c.*, u.name as author_name, p.title as post_title
+            FROM comments c
+            LEFT JOIN users u ON u.id = c.user_id
+            LEFT JOIN posts p ON p.id = c.post_id
+            WHERE c.status = :status
+            ORDER BY c.created_at DESC
+        ');
+
+        $stmt->execute(['status' => $status]);
+
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 }
