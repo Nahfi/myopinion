@@ -18,9 +18,29 @@ class UserController
         echo json_encode($this->userService->getAll());
     }
 
+    public function store(): void
+    {
+        $data   = json_decode(file_get_contents('php://input'), true) ?? [];
+        $result = $this->userService->create($data);
+        $this->respond($result, 201);
+    }
+
+    public function update(string $id): void
+    {
+        $data   = json_decode(file_get_contents('php://input'), true) ?? [];
+        $result = $this->userService->adminUpdate((int) $id, $data);
+        $this->respond($result);
+    }
+
     public function destroy(string $id): void
     {
-        $result = $this->userService->delete((int)$id);
+        $result = $this->userService->delete((int) $id);
+        $this->respond($result);
+    }
+
+    public function toggleStatus(string $id): void
+    {
+        $result = $this->userService->toggleStatus((int) $id);
         $this->respond($result);
     }
 

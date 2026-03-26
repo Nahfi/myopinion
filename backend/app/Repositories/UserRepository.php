@@ -50,7 +50,7 @@ class UserRepository implements UserRepositoryInterface
     public function findById(int $id): ?array
     {
         $stmt = $this->pdo->prepare(
-            'SELECT id, name, username, email, role, created_at FROM users WHERE id = ? LIMIT 1'
+            'SELECT id, name, username, email, role,status, created_at FROM users WHERE id = ? LIMIT 1'
         );
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
@@ -74,7 +74,7 @@ class UserRepository implements UserRepositoryInterface
     public function all(): array
     {
         $stmt = $this->pdo->query(
-            'SELECT id, name, username, email, role, created_at FROM users ORDER BY created_at DESC'
+            'SELECT id, name, username, email, role,status,created_at FROM users ORDER BY created_at DESC'
         );
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -103,7 +103,7 @@ class UserRepository implements UserRepositoryInterface
     {
         $fields = [];
         $params = [];
-        foreach (['name', 'username', 'email', 'password'] as $field) {
+        foreach (['name', 'username', 'email', 'password', 'status'] as $field) {
             if (isset($data[$field])) {
                 $fields[]          = "$field = :$field";
                 $params[":$field"] = $data[$field];

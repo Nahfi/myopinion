@@ -22,16 +22,21 @@ CREATE TABLE IF NOT EXISTS `users` (
   `email`      varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
   `password`   varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `role`       enum('user','admin') COLLATE utf8mb4_unicode_ci DEFAULT 'user',
+  `status`     enum('active','banned') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'active',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO `users` VALUES
-(1,'SuperAdmin','admin','admin@example.com','$2y$10$Ib2HWVsIbGfYpB/ZdDzZWed5tQskS4zEXwwNyvjyZvhZ5WQs7ejFW','admin','2025-05-21 14:38:22'),
-(2,'bappe','bappe','bappe@example.com','$2y$10$Ib2HWVsIbGfYpB/ZdDzZWed5tQskS4zEXwwNyvjyZvhZ5WQs7ejFW','user','2025-05-22 13:42:06');
 
+
+
+INSERT INTO `users` 
+(`id`,`name`,`username`,`email`,`password`,`role`,`status`,`created_at`) 
+VALUES
+(1,'Ahsanul','ahsanul','me.ahsanul01@gmail.com','$2y$10$B2R242MTIEoQb32L6QZ8v.DAe618uOxbPXCA.AYvT8Bh/MEHBqxOq','admin','active','2025-05-21 14:38:22'),
+(2,'bappe','bappe','bappe@example.com','$2y$10$Ib2HWVsIbGfYpB/ZdDzZWed5tQskS4zEXwwNyvjyZvhZ5WQs7ejFW','user','active','2025-05-22 13:42:06');
 -- ─── posts ───────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS `posts` (
   `id`         int NOT NULL AUTO_INCREMENT,

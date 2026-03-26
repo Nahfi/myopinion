@@ -34,6 +34,10 @@ $router->get('/posts/with/not-commented', [PostController::class, 'notCommented'
 $router->get('/admin/users', [UserController::class, 'index'], [AdminMiddleware::class]);
 $router->delete('/admin/users/:id', [UserController::class, 'destroy'], [AdminMiddleware::class]);
 
+$router->post('/admin/users', [UserController::class, 'store'], [AdminMiddleware::class]);
+$router->put('/admin/users/:id', [UserController::class, 'update'], [AdminMiddleware::class]);
+$router->patch('/admin/users/:id/status', [UserController::class, 'toggleStatus'], [AdminMiddleware::class]);
+
 $router->get('/admin/comments', [AdminCommentController::class, 'all'], [AdminMiddleware::class]);
 
 $router->get('/admin/comments/pending', [AdminCommentController::class, 'pending'], [AdminMiddleware::class]);
